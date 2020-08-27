@@ -441,7 +441,7 @@ class money(commands.Cog):
         self.gaming_list.remove(ctx.author.id)
         return
 
-    @commands.command(name="유저", aliases=[''])
+    @commands.command(name="유저", aliases=['유'])
     async def now_playing_user(self, ctx):
         embed = get_embed("🎮 | 게임 유저",f"현재 알티봇을 플레이하고 있는 유저는 {len(self.gaming_list)}명입니다\n\n알티봇의 가입자 수는 {len(userdb)}명 서버는 {len(self.client.guilds)}개 입니다")
         embed.set_thumbnail(url=self.client.user.avatar_url)
