@@ -45,7 +45,7 @@ class chat(commands.Cog):
         servers.sort(key=lambda x: x[1], reverse=True)
         embed=discord.Embed(title="RT Bot 서버",description=f'총 {len(self.client.guilds)} 개의 서버', color=0xCCFFFF)
         for x in range(0,10):
-            try: embed.add_field(name=x+' '+str(x+1)+'위 '+str(servers[x][0]), value="인원 : " + str(servers[x][1]) + ", 서버 주인 : " + str(servers[x][2]), inline=False)
+            try: embed.add_field(name=str(x+1)+'위 '+str(servers[x][0]), value="인원 : " + str(servers[x][1]) + ", 서버 주인 : " + str(servers[x][2]), inline=False)
             except: break
         await ctx.send(embed=embed)
 
