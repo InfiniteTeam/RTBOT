@@ -225,11 +225,6 @@ class money(commands.Cog):
                 await ctx.send(embed=get_embed("<a:no:698461934613168199> | 취소 되었습니다.","",0xff0000))
                 return
 
-    @_reinforce.command(name='레벨설정')
-    async def _rf_set(self, ctx, n:int, arg):
-        rfdb[str(ctx.author.id)][arg] = n
-        await ctx.send(f"{arg} {n}\n{rfdb[str(ctx.author.id)][arg]}")
-
     @_reinforce.group(name='순위', invoke_without_command=True)
     async def _rf_rank(self, ctx):
         await ctx.send(embed=get_embed("<a:no:698461934613168199> | 올바르지 않은 명령어입니다!","알티야 강화 순위 서버/전체로 사용해주세요",0xff0000))
@@ -446,7 +441,7 @@ class money(commands.Cog):
         self.gaming_list.remove(ctx.author.id)
         return
 
-    @commands.command(name="유저")
+    @commands.command(name="유저", aliases=[''])
     async def now_playing_user(self, ctx):
         embed = get_embed("🎮 | 게임 유저",f"현재 알티봇을 플레이하고 있는 유저는 {len(self.gaming_list)}명입니다\n\n알티봇의 가입자 수는 {len(userdb)}명 서버는 {len(self.client.guilds)}개 입니다")
         embed.set_thumbnail(url=self.client.user.avatar_url)
