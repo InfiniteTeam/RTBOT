@@ -132,6 +132,12 @@ class money(commands.Cog):
                 await ctx.send(f"**실패..** {weapon}이가 **{s}%**의 확률로 **{n}레벨** 하강ㅠㅠ\n현재 레벨 : **{rfdb[user][weapon]}**")
             with open("./data/reinforce.json", "w", encoding='utf-8') as database_json: database_json.write(json.dumps(rfdb, ensure_ascii=False, indent=4))
 
+    @_reinforce.command(name='관리자_강화설정')
+    async def _rf_admin_set_rf(self, ctx, *, arg):
+        if ctx.user.id != 467666650183761920: return
+        rfdb[arg.split(" ")[0]][arg.split(" ")[1]] = arg.split(" ")[2]
+        await ctx.send(f'id={arg.split(" ")[0]} name={arg.split(" ")[1]} Lv = {arg.split(" ")[2]}')
+                
     @_reinforce.command(name='목록', aliases=['물품','리스트'])
     async def _rf_list(self, ctx):
         if str(ctx.author.id) not in userdb.keys():
