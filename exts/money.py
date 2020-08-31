@@ -135,7 +135,7 @@ class money(commands.Cog):
     @_reinforce.command(name='관리자_강화설정')
     async def _rf_admin_set_rf(self, ctx, *, arg):
         if ctx.author.id != 467666650183761920: return
-        rfdb[arg.split(" ")[0]][arg.split(" ")[1]] = arg.split(" ")[2]
+        rfdb[arg.split(" ")[0]][arg.split(" ")[1]] = int(arg.split(" ")[2])
         await ctx.send(f'id={arg.split(" ")[0]} name={arg.split(" ")[1]} Lv = {arg.split(" ")[2]}')
                 
     @_reinforce.command(name='목록', aliases=['물품','리스트'])
