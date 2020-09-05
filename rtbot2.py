@@ -23,7 +23,7 @@ def find_missing_perms_by_tbstr(tbstr: str):
 
 @client.event
 async def bg_change_playing():
-    for v in [f"알티봇 V3.4.3", "'알티야 도움'로 봇명령어 알아보기", f"{len(client.guilds)} Servers│{len(client.users)} Users"]: 
+    for v in [f"알티봇 V3.5.0", "'알티야 도움'로 봇명령어 알아보기", f"{len(client.guilds)} Servers│{len(client.users)} Users"]: 
         await asyncio.gather(client.change_presence(activity=discord.Game(v)),asyncio.sleep(15))
     client.loop.create_task(bg_change_playing())
 
