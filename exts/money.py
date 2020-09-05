@@ -92,7 +92,7 @@ class money(commands.Cog):
                 return
             else: rfdb[user][weapon]=0
         if rfdb[user][weapon] >= 100:
-            msg = await ctx.send(embed=get_embed(":hammer: | 특수 강화","100렙을 넘으셔서 특수강화 도전을 하실수 있습니다.\n성공 : 50% (2~10 레벨 랜덤 오름)\n실패 : 50% (실패시 무기 파괴)\n도전 하시겠습니까?"))
+            msg = await ctx.send(embed=get_embed(":hammer: | 특수 강화","100렙을 넘으셔서 특수강화 도전을 하실수 있습니다.\n성공 : 50% (5~20 레벨 랜덤 오름)\n실패 : 50% (실패시 80레벨로 복구)\n도전 하시겠습니까?"))
             emjs=['<a:yes:698461934198063104>','<a:no:698461934613168199>']
             await msg.add_reaction(emjs[0])
             await msg.add_reaction(emjs[1])
@@ -108,13 +108,13 @@ class money(commands.Cog):
                 if e == '<a:yes:698461934198063104>':
                     if randint(1,101) > 50:
                         user = str(ctx.author.id)
-                        f = randint(2,10)
+                        f = randint(5,20)
                         rfdb[user][weapon]=int(rfdb[user][weapon])+f
                         await ctx.send(embed=get_embed(f"<a:yes:698461934198063104> | {weapon} (이)가 **{f}레벨** 성장했습니다.",f"현재 레벨 : **{rfdb[user][weapon]}**"))
                         return
                     else:
                         user = str(ctx.author.id)
-                        del rfdb[user][weapon]
+                        rfdb[user][weapon] = 80
                         await ctx.send(embed=get_embed(f"<a:no:698461934613168199> | {weapon} (이)가 파괴되었습니다.","",0xff0000))
                         return
                 elif e == '<a:no:698461934613168199>':
@@ -122,14 +122,14 @@ class money(commands.Cog):
                     return
         else:
             s=int(rfdb[user][weapon])
-            if randint(1,101) > s:
+            if randint(1,105) > s:
                 n = randint(2,10)
                 rfdb[user][weapon]=s+n
-                await ctx.send(f"**성공!** {weapon} (이)가 **{100-s}%**의 확률로 **{n}레벨** 성장했습니다\n현재 레벨 : **{rfdb[user][weapon]}**")
+                await ctx.send(f"**성공!** {weapon} (이)가 **{105-s}%**의 확률로 **{n}레벨** 성장했습니다\n현재 레벨 : **{rfdb[user][weapon]}**")
             else: 
                 n=randint(1,5)
                 rfdb[user][weapon]=s-n
-                await ctx.send(f"**실패..** {weapon}이가 **{s}%**의 확률로 **{n}레벨** 하강ㅠㅠ\n현재 레벨 : **{rfdb[user][weapon]}**")
+                await ctx.send(f"**실패..** {weapon}이가 **{5+s}%**의 확률로 **{n}레벨** 하강ㅠㅠ\n현재 레벨 : **{rfdb[user][weapon]}**")
             with open("./data/reinforce.json", "w", encoding='utf-8') as database_json: database_json.write(json.dumps(rfdb, ensure_ascii=False, indent=4))
 
     @_reinforce.command(name='관리자_강화설정')
@@ -366,7 +366,10 @@ class money(commands.Cog):
                 return
             attempt = int(msg.content)
             if attempt == number:
-                money = round(money*up)
+                try: money = round(money*up)
+                except: 
+                    if up == 1.5:
+                        money = (money * 3) // 2
                 await ctx.send(f'성공!! {money} 원 지급!')
                 userdb[str(ctx.author.id)]["money"] = int(userdb[str(ctx.author.id)]["money"])+money
                 break
