@@ -3,8 +3,6 @@ from discord.ext import commands
 
 start_time = datetime.datetime.utcnow()
 
-with open("./data/emblem.json","r", encoding='UTF-8') as db_json: emblem = json.load(db_json)
-
 def get_embed(title, description='', color=0xCCFFFF):
     embed=discord.Embed(title=title,description=description,color=color)
     return embed
@@ -115,25 +113,15 @@ class chat(commands.Cog):
         embed.add_field(name="Discord 가입 일시", value=str(date.year) + "년 " + str(date.month) + "월 " + str(date.day) + "일 ", inline=True)
         joat = user.joined_at.isoformat()
         embed.add_field(name="서버 가입 일시", value=joat[0:4]+'년 '+joat[5:7]+'월 '+joat[8:10]+'일', inline=True)
-        if user.id==467666650183761920: embed.add_field(name="봇 권한", value="ADMIN", inline=True)
-        elif user.id==473371560703557653 or user.id==315467368656666635: embed.add_field(name="봇 권한", value="BETA TESTER", inline=True)
-        else : embed.add_field(name="봇 권한", value="USER", inline=True)
-        if user.guild_permissions.administrator: embed.add_field(name="서버 권한", value="ADMIN", inline=True)
-        else: embed.add_field(name="서버 권한", value="USER", inline=True)
-        if str(user.id) in emblem.keys(): embed.add_field(name="칭호", value="\n".join(emblem[str(user.id)]), inline=True)
+        if user.bot == False:
+            if user.id==467666650183761920: embed.add_field(name="봇 권한", value="ADMIN", inline=True)
+            elif user.id==473371560703557653 or user.id==315467368656666635: embed.add_field(name="봇 권한", value="BETA TESTER", inline=True)
+            else : embed.add_field(name="봇 권한", value="USER", inline=True)
+            if user.guild_permissions.administrator: embed.add_field(name="서버 권한", value="ADMIN", inline=True)
+            else: embed.add_field(name="서버 권한", value="USER", inline=True)
+        else:
+            embed.add_field(name="봇 초대장 생성",value=f"[초대장](https://discord.com/oauth2/authorize?client_id={user.id}&scope=bot&permissions=0)")
         await ctx.send(embed=embed)
-
-    @commands.group(name='칭호')
-    async def _emblem(self, ctx):
-        pass
-
-    @_emblem.command(name='추가')
-    async def _emblem_add(self, ctx):
-        pass
-
-    @_emblem.command(name='삭제')
-    async def _emblem_erase(self, ctx):
-        pass
 
     @commands.command(name='프사')
     async def chat_profile_image(self, ctx, user: typing.Optional[discord.Member]=None):
