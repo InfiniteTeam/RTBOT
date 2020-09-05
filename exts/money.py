@@ -318,8 +318,8 @@ class money(commands.Cog):
                 self.gaming_list.remove(ctx.author.id)
                 raise errors.NoMoney
         embed=get_embed("⚖️ | 숫자맞추기 난이도를 정해주세요","실패시 걸은돈은 삭제됩니다.")
-        embed.add_field(name="😀 | 쉬움",value="1~10까지의 수중 뽑습니다.\n시도 횟수 : 4\n보상 : 걸은돈의 1.5배")
-        embed.add_field(name="😠 | 보통",value="1~50까지의 수중 뽑습니다.\n시도 횟수 : 5\n보상 : 걸은돈의 3배")
+        embed.add_field(name="😀 | 쉬움",value="1~10까지의 수중 뽑습니다.\n시도 횟수 : 3\n보상 : 걸은돈의 1.5배")
+        embed.add_field(name="😠 | 보통",value="1~50까지의 수중 뽑습니다.\n시도 횟수 : 4\n보상 : 걸은돈의 3배")
         embed.add_field(name="🤬 | 어려움",value="1~100까지의 수중 뽑습니다.\n시도 횟수 : 6\n보상 : 걸은돈의 6배")
         embed.set_footer(text="❌를 눌러 취소")
         msg = await ctx.send(embed=embed)
@@ -336,11 +336,11 @@ class money(commands.Cog):
             e = str(reaction.emoji)
             if e == '😀':
                 number = randint(1,10)
-                guess=4
+                guess=3
                 up=1.5
             elif e == '😠':
                 number = randint(1,50)
-                guess=5
+                guess=4
                 up=3
             elif e == '🤬':
                 number = randint(1,100)
