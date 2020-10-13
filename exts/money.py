@@ -631,6 +631,31 @@ class money(commands.Cog):
         else:
             await ctx.send(embed=get_embed("<a:no:698461934613168199> | 알맞지 않은 명령어입니다","<알티야 니돈 @언급>의 형태로 사용해주세요",0xff0000))
 
+    @commands.command(name='탈퇴')
+    async def _logout(self, ctx):
+        if str(ctx.author.id) not in userdb: 
+            await ctx.send(embed=get_embed('<a:no:698461934613168199> | 가입 되어 있지 않습니다!',"<알티야 가입> 으로 가입해주세요", 0xFF0000))
+            return
+        msg = await ctx.send(embed=get_embed("📝 | **알티봇 서비스에서 탈퇴하시겠습니까?**","탈퇴시, 돈과 강화 목록을 포함한 모든 데이터가 영구적으로 삭제되며 복구할수 없습니다."))
+        emjs=['<a:yes:698461934198063104>','<a:no:698461934613168199>']
+        for em in emjs: await msg.add_reaction(em)
+        def check(reaction, user):
+            return user == ctx.author and msg.id == reaction.message.id and str(reaction.emoji) in emjs
+        try:
+            reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=20)
+        except asyncio.TimeoutError:
+            await asyncio.gather(msg.delete(),ctx.send(embed=get_embed('⏰ | 시간이 초과되었습니다!',"", 0xFF0000)))
+            return
+        else:
+            e = str(reaction.emoji)
+            if e == '<a:yes:698461934198063104>':
+                del userdb[str(ctx.author.id)]
+                await asyncio.gather(msg.delete(),ctx.send(embed=get_embed('<a:yes:698461934198063104> | 탈퇴에 성공했습니다!',"", 0xCCFFFF)))
+                return
+            elif e == '<a:no:698461934613168199>':
+                await asyncio.gather(msg.delete(),ctx.send(embed=get_embed('<a:no:698461934613168199> | 취소 되었습니다!',"", 0xFF0000)))
+                return
+                                               
     @commands.command(name='가입', aliases=['나도'])
     async def _login(self, ctx):
         if str(ctx.author.id) in userdb: 
