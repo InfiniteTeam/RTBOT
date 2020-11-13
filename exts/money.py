@@ -590,22 +590,35 @@ class money(commands.Cog):
         with open("./data/userdatabase.json", "w", encoding='utf-8') as database_json:
                 database_json.write(json.dumps(userdb, ensure_ascii=False, indent=4))
 
-    @commands.group(name='내돈', aliases=['지갑','돈'], invoke_without_command=True)
-    async def _mymoney(self, ctx):
+    @commands.group(name='내돈', aliases=['지갑','돈',"니돈"], invoke_without_command=True)
+    async def _mymoney(self, ctx, user: typing.Optional[discord.Member]=None):
         if str(ctx.author.id) not in userdb: 
             await ctx.send(embed=get_embed('<a:no:698461934613168199> | 가입 되어 있지 않습니다!',"<알티야 가입> 으로 가입해주세요", 0xFF0000))
             return
-        money=userdb[str(ctx.author.id)]["money"]
-        await ctx.send(embed=get_embed(f'💸 | {ctx.author} 님의 지갑',f"{money} 원"))
+        if user:
+            if str(user.id) not in userdb:
+                await ctx.send(embed=get_embed('<a:no:698461934613168199> | 가입 되어 있지 않은 유저입니다!',"<알티야 가입> 으로 가입해주세요", 0xFF0000))
+                return
+        else: 
+            user = ctx.author
+        money=userdb[str(user.id)]["money"]
+        await ctx.send(embed=get_embed(f'💸 | {user} 님의 지갑',f"{money} 원"))
 
     @_mymoney.command(name="한글")
-    async def _mymoney_kor(self, ctx):
+    async def _mymoney_kor(self, ctx, user: typing.Optional[discord.Member]=None):
         if str(ctx.author.id) not in userdb: 
             await ctx.send(embed=get_embed('<a:no:698461934613168199> | 가입 되어 있지 않습니다!',"<알티야 가입> 으로 가입해주세요", 0xFF0000))
             return
+        if user:
+            if str(user.id) not in userdb:
+                await ctx.send(embed=get_embed('<a:no:698461934613168199> | 가입 되어 있지 않은 유저입니다!',"<알티야 가입> 으로 가입해주세요", 0xFF0000))
+                return
+        else: 
+            user = ctx.author
+
         suffix=['','만', '억', '조', '경', '해', '자', '양', '구', '간', '정', '재', '극','항하사','아승기','나유타','불가사의','무량대수','','','','','','','','구골','','','','','','','','','','','','','','','','','','','','','','','','']
         a=10000 ** 50
-        money=userdb[str(ctx.author.id)]["money"]
+        money=userdb[str(user.id)]["money"]
         if money > a: 
             await ctx.send(embed=get_embed("<a:no:698461934613168199> | 수가 너무 커서 계산이 불가합니다","구골^2 이상",0xff0000))
             return
@@ -615,21 +628,8 @@ class money(commands.Cog):
                 str_result += f"{int(money // a)}{suffix[-i]} "
                 money = money % a
             a=a//10000
-        await ctx.send(embed=get_embed(f'💸 | {ctx.author} 님의 지갑',f"{str_result.strip()}원"))
 
-    @commands.command(name='니돈')
-    async def _your_money(self, ctx, user: typing.Optional[discord.Member]=None):
-        if ctx.guild is None:
-            await ctx.send(embed=get_embed("<a:no:698461934613168199> | 서버내에서만 사용가능한 명령어 입니다.",0xff0000))
-            return
-        if user:
-            if str(user.id) not in userdb:
-                await ctx.send(embed=get_embed('<a:no:698461934613168199> | 가입 되어 있지 않습니다!',"<알티야 가입> 으로 가입해주세요", 0xFF0000))
-                return
-            money=userdb[str(user.id)]["money"]
-            await ctx.send(embed=get_embed(f'💸 | {user} 님의 지갑',f"{money} 원"))
-        else:
-            await ctx.send(embed=get_embed("<a:no:698461934613168199> | 알맞지 않은 명령어입니다","<알티야 니돈 @언급>의 형태로 사용해주세요",0xff0000))
+        await ctx.send(embed=get_embed(f'💸 | {user} 님의 지갑',f"{str_result.strip()} 원"))
 
     @commands.command(name='탈퇴')
     async def _logout(self, ctx):
