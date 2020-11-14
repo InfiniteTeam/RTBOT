@@ -12,7 +12,7 @@ class events(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.bg_change_playing.start()
-        self.gamecycle = cycle([f"알티봇 V3.5.2", "'알티야 도움'로 봇명령어 알아보기", f"{len(self.client.guilds)} Servers│{len(self.client.users)} Users"])
+        self.gamecycle = cycle([f"알티봇 V3.5.3", "'알티야 도움'로 봇명령어 알아보기", f"{len(self.client.guilds)} Servers│{len(self.client.users)} Users"])
 
     @tasks.loop(seconds=15)
     async def bg_change_playing(self):
