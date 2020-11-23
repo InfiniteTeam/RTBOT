@@ -12,7 +12,7 @@ class events(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.bg_change_playing.start()
-        self.gamecycle = cycle([f"알티봇 V3.5.3", "'알티야 도움'로 봇명령어 알아보기", f"{len(self.client.guilds)} Servers│{len(self.client.users)} Users"])
+        self.gamecycle = cycle([f"알티봇 V3.5.2", "'알티야 도움'로 봇명령어 알아보기", f"{len(self.client.guilds)} Servers│{len(self.client.users)} Users"])
 
     @tasks.loop(seconds=15)
     async def bg_change_playing(self):
@@ -137,7 +137,7 @@ class events(commands.Cog):
                 except discord.Forbidden:
                     embed = get_embed("⛔ 메시지를 보낼 수 없습니다!",
                         f"""\
-                            방금 [명령어]({ctx.message.jump_url})를 입력하신 채널에서 Aztra에 `메시지 전송하기` 또는 `링크 전송` 권한이 없어 메시지를 보낼 수 없습니다. 서버 관리자에게 문의해주세요.
+                            방금 [명령어]({ctx.message.jump_url})를 입력하신 채널에서 알티봇에 `메시지 전송하기` 또는 `링크 전송` 권한이 없어 메시지를 보낼 수 없습니다. 서버 관리자에게 문의해주세요.
                             **(`{ctx.guild}` 서버의 `{ctx.channel}` 채널)**
                         """,
                     )
