@@ -857,7 +857,7 @@ class money(commands.Cog):
         if str(ctx.author.id) not in userdb.keys(): 
             await ctx.send(embed=get_embed('<a:no:698461934613168199> | 가입 되어 있지 않습니다!',"<알티야 가입> 으로 가입해주세요", 0xFF0000))
             return
-        if ctx.author.id not in [467666650183761920]: return
+        if ctx.author.id not in [467666650183761920, 386715407697969173]: return
         userdb[uid]["money"] = n
         await ctx.send(f"SETTED {uid}\nn: {n}")
         with open("./data/userdatabase.json", "w", encoding='utf-8') as database_json: database_json.write(json.dumps(userdb, ensure_ascii=False, indent=4))
