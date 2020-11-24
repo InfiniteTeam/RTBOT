@@ -882,6 +882,8 @@ class money(commands.Cog):
 
         if uid in userdb.keys(): 
             await ctx.send('가입된 유저: {}\n돈: {} 원\n은행: {} 원'.format(uid, userdb[uid]['money'], userdb[uid]['bank']))
+        else:
+            await ctx.send('가입 안된 유저: {}'.format(uid))
 
     @commands.group(name='저금', invoke_without_command=True)
     async def _money_save(self, ctx, n:int):
