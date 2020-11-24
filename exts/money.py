@@ -862,6 +862,16 @@ class money(commands.Cog):
         await ctx.send(f"SETTED {uid}\nn: {n}")
         with open("./data/userdatabase.json", "w", encoding='utf-8') as database_json: database_json.write(json.dumps(userdb, ensure_ascii=False, indent=4))
 
+    @commands.command(name='은행설정')
+    async def _bank_set(self, ctx, uid, n:int):
+        if str(ctx.author.id) not in userdb.keys(): 
+            await ctx.send(embed=get_embed('<a:no:698461934613168199> | 가입 되어 있지 않습니다!',"<알티야 가입> 으로 가입해주세요", 0xFF0000))
+            return
+        if ctx.author.id not in [467666650183761920, 386715407697969173]: return
+        userdb[uid]["bank"] = n
+        await ctx.send(f"SETTED BANK {uid}\nn: {n}")
+        with open("./data/userdatabase.json", "w", encoding='utf-8') as database_json: database_json.write(json.dumps(userdb, ensure_ascii=False, indent=4))
+
     # 알파 왔다감
     @commands.command(name='강제가입')
     async def _force_register(self, ctx: commands.Context, uid):
