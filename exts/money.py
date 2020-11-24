@@ -867,10 +867,10 @@ class money(commands.Cog):
     async def _force_register(self, ctx: commands.Context, uid):
         if ctx.author.id not in [467666650183761920, 386715407697969173]: return
 
-        if str(ctx.author.id) in userdb.keys(): 
+        if uid in userdb.keys(): 
             await ctx.send('이미 가입된 유저: {}'.format(uid))
         else:
-            userdb[str(ctx.author.id)] = {"money":5000,"bank":0}
+            userdb[uid] = {"money":5000,"bank":0}
             with open("./data/userdatabase.json", "w", encoding='utf-8') as database_json:
                 database_json.write(json.dumps(userdb, ensure_ascii=False, indent=4))
             await ctx.send('완료: {}'.format(uid))
@@ -880,7 +880,7 @@ class money(commands.Cog):
     async def _check_user_existing(self, ctx: commands.Context, uid):
         if ctx.author.id not in [467666650183761920, 386715407697969173]: return
 
-        if str(ctx.author.id) in userdb.keys(): 
+        if uid in userdb.keys(): 
             await ctx.send('가입된 유저: {}\n돈: {} 원\n은행: {} 원'.format(uid, userdb[uid]['money'], userdb[uid]['bank']))
 
     @commands.group(name='저금', invoke_without_command=True)
