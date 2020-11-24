@@ -881,7 +881,7 @@ class money(commands.Cog):
         if ctx.author.id not in [467666650183761920, 386715407697969173]: return
 
         if str(ctx.author.id) in userdb.keys(): 
-            await ctx.send('가입된 유저: {}'.format(uid))
+            await ctx.send('가입된 유저: {}\n돈: {} 원\n은행: {} 원'.format(uid, userdb[uid]['money'], userdb[uid]['bank']))
 
     @commands.group(name='저금', invoke_without_command=True)
     async def _money_save(self, ctx, n:int):
