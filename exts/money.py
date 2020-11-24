@@ -862,6 +862,27 @@ class money(commands.Cog):
         await ctx.send(f"SETTED {uid}\nn: {n}")
         with open("./data/userdatabase.json", "w", encoding='utf-8') as database_json: database_json.write(json.dumps(userdb, ensure_ascii=False, indent=4))
 
+    # 알파 왔다감
+    @commands.command(name='강제가입')
+    async def _force_register(self, ctx: commands.Context, uid):
+        if ctx.author.id not in [467666650183761920, 386715407697969173]: return
+
+        if str(ctx.author.id) in userdb.keys(): 
+            await ctx.send('이미 가입된 유저: {}'.format(uid))
+        else:
+            userdb[str(ctx.author.id)] = {"money":5000,"bank":0}
+            with open("./data/userdatabase.json", "w", encoding='utf-8') as database_json:
+                database_json.write(json.dumps(userdb, ensure_ascii=False, indent=4))
+            await ctx.send('완료: {}'.format(uid))
+
+    # 알파 왔다감
+    @commands.command(name='유저등록확인')
+    async def _check_user_existing(self, ctx: commands.Context, uid):
+        if ctx.author.id not in [467666650183761920, 386715407697969173]: return
+
+        if str(ctx.author.id) in userdb.keys(): 
+            await ctx.send('가입된 유저: {}'.format(uid))
+
     @commands.group(name='저금', invoke_without_command=True)
     async def _money_save(self, ctx, n:int):
         if str(ctx.author.id) not in userdb.keys(): 
