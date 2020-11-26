@@ -1,6 +1,6 @@
 import discord,os,json,random,datetime,requests,bs4,asyncio,typing
 from discord.ext import commands 
-from rtbot_utils import errors
+from utils import errors
 
 with open("./data/noticechannel.json", "r", encoding='UTF8') as db_json: noticedb = json.load(db_json)
 
