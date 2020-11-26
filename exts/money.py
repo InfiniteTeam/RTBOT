@@ -2,7 +2,7 @@ import discord, json, asyncio, typing
 import traceback
 from discord.ext import commands, tasks
 from random import randint
-from rtbot_utils import errors
+from utils import errors
 
 with open("./data/userdatabase.json", "r", encoding='UTF8') as db_json: userdb = json.load(db_json)
 with open("./data/lotto.json", "r", encoding='UTF8') as db_json: lottodb = json.load(db_json)
