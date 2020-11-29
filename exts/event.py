@@ -163,6 +163,9 @@ class events(commands.Cog):
             
             elif error.__cause__.code == 10008:
                 return
+                                      
+            elif error.__cause__.code == 0:
+                return
 
             else:
                 embed = get_embed('<a:no:698461934613168199> | 알 수 없는 에러', '오류 코드: ' + str(error.__cause__.code) + "\n[알티봇 서포트 서버](https://discord.gg/hTZxtbC)에서 도움을 드립니다.",0xff0000)
