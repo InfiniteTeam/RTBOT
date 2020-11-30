@@ -579,7 +579,7 @@ class money(commands.Cog):
             userdb[user]["money"] = userdb[user]["money"] * 100
         with open("./data/userdatabase.json", "w", encoding='utf-8') as database_json: database_json.write(json.dumps(userdb, ensure_ascii=False, indent=4))
 
-    @commands.command(name='돈내놔')
+    @commands.command(name='돈내놔', aliases=['돈줘','돈받기',"ㄷㅂㄱ"])
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def _give_me_money(self, ctx):
         if str(ctx.author.id) not in userdb: 
@@ -590,7 +590,7 @@ class money(commands.Cog):
         with open("./data/userdatabase.json", "w", encoding='utf-8') as database_json:
                 database_json.write(json.dumps(userdb, ensure_ascii=False, indent=4))
 
-    @commands.group(name='내돈', aliases=['지갑','돈',"니돈"], invoke_without_command=True)
+    @commands.group(name='내돈', aliases=['지갑','돈',"니돈","ㄴㄷ","ㄷ"], invoke_without_command=True)
     async def _mymoney(self, ctx, user: typing.Optional[discord.Member]=None):
         if str(ctx.author.id) not in userdb: 
             await ctx.send(embed=get_embed('<a:no:698461934613168199> | 가입 되어 있지 않습니다!',"<알티야 가입> 으로 가입해주세요", 0xFF0000))
@@ -686,7 +686,7 @@ class money(commands.Cog):
                 await asyncio.gather(msg.delete(),ctx.send(embed=get_embed('<a:no:698461934613168199> | 취소 되었습니다!',"", 0xFF0000)))
                 return
     
-    @commands.command(name='돈줘', aliases=['송금','입금'])
+    @commands.command(name='송금', aliases=['입금'])
     async def _give_money(self, ctx, muser:discord.Member, n:int):
         if ctx.guild is None:
             await ctx.send(embed=get_embed("<a:no:698461934613168199> | 서버내에서만 사용가능한 명령어 입니다.",0xff0000))
