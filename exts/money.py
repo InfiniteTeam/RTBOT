@@ -288,43 +288,66 @@ class money(commands.Cog):
 
     @commands.command(name="숫자맞추기", aliases=['숫맞','업다운','업다운게임'])
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def updown(self, ctx):
+    async def updown(self, ctx, n: typing.Union[str, int, None] = None):
         if str(ctx.author.id) not in userdb.keys():
             await ctx.send(embed=get_embed('<a:no:698461934613168199> | 가입 되어 있지 않습니다!',"<알티야 가입> 으로 가입해주세요", 0xFF0000))
             return
         if ctx.author.id in self.gaming_list:
             await ctx.send(embed=get_embed("<a:no:698461934613168199> | 이미 다른 게임이 진행중입니다.", "",0xff0000))
             return
+                                               
         self.gaming_list.append(ctx.author.id)
-        await ctx.send(embed=get_embed("💵 | 거실금액을 입력해주세요"))
-        def check(author):
-            def inner_check(message): 
-                if message.author != author: return False
-                try: int(message.content) 
-                except ValueError: return False
-                else: return True
-            return inner_check
-        try: msg = await self.client.wait_for('message',check=check(ctx.author),timeout=30)
-        except asyncio.TimeoutError: 
-            await ctx.send(embed=get_embed('⏰ | 시간이 초과되었습니다!',"", 0xFF0000))
-            self.gaming_list.remove(ctx.author.id)
-            return
-        else: 
-            money = int(msg.content)
-            if money <= 0: 
+        money = userdb[str(ctx.author.id)]["money"]
+                                               
+        if not n:
+            await ctx.send(embed=get_embed("💵 | 거실금액을 입력해주세요"))
+
+            def check(author):
+                def inner_check(message): 
+                    if message.author != author: return False
+                    else: return True
+                return inner_check
+            try: msg = await self.client.wait_for('message',check=check(ctx.author),timeout=20)
+            except asyncio.TimeoutError: 
+                self.gaming_list.remove(ctx.author.id)
+                await ctx.send(embed=get_embed('⏰ | 시간이 초과되었습니다!',"", 0xFF0000))
+                return
+            else: 
+                n = msg.content
+                if n in ["0","X","x"]:
+                    self.gaming_list.remove(ctx.author.id)
+                    await ctx.send(embed=get_embed("<a:no:698461934613168199> | 취소 되었습니다.","",0xff0000))
+                    return
+
+        try: int(n)
+        except:
+            if n in ["올인","전부","전체","최대"]: n=money
+            else: 
                 self.gaming_list.remove(ctx.author.id)
                 raise errors.morethan1
-            if money > int(userdb[str(ctx.author.id)]["money"]): 
-                self.gaming_list.remove(ctx.author.id)
-                raise errors.NoMoney
+        else: n = int(n)
+
+        if n <= 0: 
+            self.gaming_list.remove(ctx.author.id)
+            raise errors.morethan1
+
+        if n > money: 
+            self.gaming_list.remove(ctx.author.id)
+            raise errors.NoMoney
+                                               
         embed=get_embed("⚖️ | 숫자맞추기 난이도를 정해주세요","실패시 걸은돈은 삭제됩니다.")
-        embed.add_field(name="😀 | 쉬움",value="1~10까지의 수중 뽑습니다.\n시도 횟수 : 3\n보상 : 걸은돈의 1.5배")
-        embed.add_field(name="😠 | 보통",value="1~50까지의 수중 뽑습니다.\n시도 횟수 : 4\n보상 : 걸은돈의 3배")
-        embed.add_field(name="🤬 | 어려움",value="1~100까지의 수중 뽑습니다.\n시도 횟수 : 6\n보상 : 걸은돈의 6배")
+        embed.add_field(name="😀 | 쉬움",value="1~10까지의 수중 뽑습니다.\n보상 : 걸은돈의 1 ~ 2배")
+        embed.add_field(name="😠 | 보통",value="1~20까지의 수중 뽑습니다.\n보상 : 걸은돈의 2 ~ 4배")
+        embed.add_field(name="🤬 | 어려움",value="1~30까지의 수중 뽑습니다.\n보상 : 걸은돈의 3 ~ 6배")
         embed.set_footer(text="❌를 눌러 취소")
         msg = await ctx.send(embed=embed)
+                                               
+        number = 0
+        lev = 0                   
+                                               
         emjs=['😀','😠','🤬','❌']
         for em in emjs: await msg.add_reaction(em)
+                                               
         def check(reaction, user):
             return user == ctx.author and msg.id == reaction.message.id and str(reaction.emoji) in emjs
         try: reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=60)
@@ -336,21 +359,20 @@ class money(commands.Cog):
             e = str(reaction.emoji)
             if e == '😀':
                 number = randint(1,10)
-                guess=3
-                up=1.5
+                lev = 1
             elif e == '😠':
-                number = randint(1,50)
-                guess=4
-                up=3
+                number = randint(1,20)
+                lev = 2
             elif e == '🤬':
-                number = randint(1,100)
-                guess=6
-                up=6
+                number = randint(1,30)
+                lev = 3
             elif e == '❌':
                 self.gaming_list.remove(ctx.author.id)
                 await ctx.send(embed=get_embed("<a:no:698461934613168199> | 취소 되었습니다.","",0xff0000))
                 return
-        await ctx.send('입력해주세요')
+                                               
+        await ctx.send(embed=get_embed('입력해주세요'))
+                                               
         def check(author):
             def inner_check(message): 
                 if message.author != author: return False
@@ -364,25 +386,20 @@ class money(commands.Cog):
                 await ctx.send(embed=get_embed('⏰ | 시간이 초과되었습니다!',"", 0xFF0000))
                 self.gaming_list.remove(ctx.author.id)
                 return
-            attempt = int(msg.content)
-            if attempt == number:
-                try: money = round(money*up)
-                except: 
-                    if up == 1.5:
-                        money = (money * 3) // 2
-                await ctx.send(f'성공!! {money} 원 지급!')
-                userdb[str(ctx.author.id)]["money"] = int(userdb[str(ctx.author.id)]["money"])+money
-                break
-            if guess<=1:
-                await ctx.send(f"실패.. {money}원 빼앗김")
-                userdb[str(ctx.author.id)]["money"] = int(userdb[str(ctx.author.id)]["money"])-money
-                break
-            if attempt > number:
-                guess -= 1
-                await ctx.send(f'**{guess}**번 남음\n아래로\n입력해주세요')
-            elif attempt < number:
-                guess -= 1
-                await ctx.send(f'**{guess}**번 남았엉.. \n위로\n입력해주세요')
+                                               
+            attempt = abs(int(msg.content)-number)
+            if number == 0:
+                    lev = lev * 2
+                    await ctx.send(f'정확합니다!! {n*lev} 원 지급! \n**({lev}배)**')
+            elif number == 1:
+                    lev = lev * 1.5
+                    await ctx.send(f'1차이! {n*lev} 원 지급! \n**({lev}배)**')
+            elif number == 2:
+                    await ctx.send(f'2차이~ {n*lev} 원 지급! \n**({lev}배)**')
+            else:
+                    await ctx.send(f'맞추지 못했습니다...')
+                    return
+            userdb[str(ctx.author.id)]["money"] = money + (n*lev)
         self.gaming_list.remove(ctx.author.id)
         return
 
