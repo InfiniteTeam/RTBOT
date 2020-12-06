@@ -327,7 +327,7 @@ class money(commands.Cog):
                 raise errors.morethan1
         else: n = int(n)
 
-        if n <= 0: 
+        if n < 0: 
             self.gaming_list.remove(ctx.author.id)
             raise errors.morethan1
 
@@ -380,26 +380,27 @@ class money(commands.Cog):
                 except ValueError: return False
                 else: return True
             return inner_check
-        while True:
-            try: msg = await self.client.wait_for('message',check=check(ctx.author),timeout=30)
-            except asyncio.TimeoutError: 
-                await ctx.send(embed=get_embed('⏰ | 시간이 초과되었습니다!',"", 0xFF0000))
-                self.gaming_list.remove(ctx.author.id)
-                return
-                                               
-            attempt = abs(int(msg.content)-number)
-            if number == 0:
-                    lev = lev * 2
-                    await ctx.send(f'정확합니다!! {n*lev} 원 지급! \n**({lev}배)**')
-            elif number == 1:
-                    lev = lev * 1.5
-                    await ctx.send(f'1차이! {n*lev} 원 지급! \n**({lev}배)**')
-            elif number == 2:
-                    await ctx.send(f'2차이~ {n*lev} 원 지급! \n**({lev}배)**')
-            else:
-                    await ctx.send(f'맞추지 못했습니다...')
-                    return
-            userdb[str(ctx.author.id)]["money"] = money + (n*lev)
+        try: msg = await self.client.wait_for('message',check=check(ctx.author),timeout=30)
+        except asyncio.TimeoutError: 
+            await ctx.send(embed=get_embed('⏰ | 시간이 초과되었습니다!',"", 0xFF0000))
+            self.gaming_list.remove(ctx.author.id)
+            return
+
+        userdb[str(ctx.author.id)]["money"] = userdb[str(ctx.author.id)]["money"] - n
+        attempt = abs(int(msg.content)-number)
+        if attempt == 0:
+            lev = lev * 2
+            await ctx.send(f'정확합니다!! {n*lev} 원 지급! \n**({lev}배)**')
+        elif attempt == 1:
+            lev = lev * 1.5
+            await ctx.send(f'1차이! {n*lev} 원 지급! \n**({lev}배)**')
+        elif attempt == 2:
+            await ctx.send(f'2차이~ {n*lev} 원 지급! \n**({lev}배)**')
+        else:
+            await ctx.send(f'맞추지 못했습니다...')
+            self.gaming_list.remove(ctx.author.id)
+            return
+        userdb[str(ctx.author.id)]["money"] = money + (n*lev)
         self.gaming_list.remove(ctx.author.id)
         return
 
