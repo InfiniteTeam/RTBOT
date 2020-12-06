@@ -390,17 +390,17 @@ class money(commands.Cog):
         attempt = abs(int(msg.content)-number)
         if attempt == 0:
             lev = lev * 2
-            await ctx.send(f'정확합니다!! {n*lev} 원 지급! \n**({lev}배)**')
+            await ctx.send(f'정확합니다!! 원래 숫자는 {number}였습니다. **({lev}배)**\n{n*lev} 원 지급!')
         elif attempt == 1:
             lev = lev * 1.5
-            await ctx.send(f'1차이! {n*lev} 원 지급! \n**({lev}배)**')
+            await ctx.send(f'1차이! 원래 숫자는 {number}였습니다. **({lev}배)**\n{int(n*lev)} 원 지급!')
         elif attempt == 2:
-            await ctx.send(f'2차이~ {n*lev} 원 지급! \n**({lev}배)**')
+            await ctx.send(f'2차이~ 원래 숫자는 {number}였습니다. **({lev}배)**\n{n*lev} 원 지급!')
         else:
             await ctx.send(f'맞추지 못했습니다...')
             self.gaming_list.remove(ctx.author.id)
             return
-        userdb[str(ctx.author.id)]["money"] = money + (n*lev)
+        userdb[str(ctx.author.id)]["money"] = money + int(n*lev)
         self.gaming_list.remove(ctx.author.id)
         return
 
