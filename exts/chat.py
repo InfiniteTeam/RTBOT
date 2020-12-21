@@ -10,6 +10,15 @@ def get_embed(title, description='', color=0xCCFFFF):
 class chat(commands.Cog):
     def __init__(self, client):
         self.client = client
+        
+    @commands.command(name="유저")
+    async def now_playing_user(self, ctx):
+        async with self.pool.acquire() as conn:
+            async with conn.cursor(aiomysql.DictCursor) as cur:
+                count = await cur.execute('SELECT id from userdata')
+        embed = get_embed("🎮 | 게임 유저",f"알티봇의 가입자 수는 {count}명 서버는 {len(self.client.guilds)}개 입니다")
+        embed.set_thumbnail(url=self.client.user.avatar_url)
+        await ctx.send(embed=embed)
 
     @commands.command(name="주사위")
     async def chat_dice(self, ctx):
@@ -43,7 +52,7 @@ class chat(commands.Cog):
         servers.sort(key=lambda x: x[1], reverse=True)
         embed=discord.Embed(title="RT Bot 서버",description=f'총 {len(self.client.guilds)} 개의 서버', color=0xCCFFFF)
         for x in range(0,10):
-            try: embed.add_field(name=str(x+1)+'위 '+str(servers[x][0]), value="인원 : " + str(servers[x][1]) + ", 서버 주인 : " + str(servers[x][2]), inline=False)
+            try: embed.add_field(name=f'{x+1}위 {servers[x][0]}', value=f"인원 : {servers[x][1]}, 서버 주인 : {servers[x][2]}", inline=False)
             except: break
         await ctx.send(embed=embed)
 
