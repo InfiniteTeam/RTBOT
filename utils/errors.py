@@ -25,6 +25,15 @@ class SentByBotUser(commands.CheckFailure):
 class LockedExtensionUnloading(Exception):
     pass
 
+class blacklistuser(Exception):
+    pass
+
+class playinggame(Exception):
+    pass
+
+class NotFound(Exception):
+    pass
+
 class MissingRequiredArgument(commands.CheckFailure):
     def __init__(self, param, paramdesc):
         self.param = param
