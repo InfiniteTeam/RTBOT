@@ -1,6 +1,6 @@
-import discord,os,json,random,datetime,requests,bs4,asyncio,typing
+import discord,json,asyncio,aiomysql,traceback
 from discord.ext import commands 
-from utils import errors
+from utils import errors,checks
 
 with open("./data/noticechannel.json", "r", encoding='UTF8') as db_json: noticedb = json.load(db_json)
 
@@ -11,49 +11,106 @@ def get_embed(title, description='', color=0xCCFFFF):
 class admincmds(commands.Cog):
     def __init__(self, client):
         self.client = client
-    
-    @commands.command(name='공지채널')
-    @commands.guild_only()
-    @commands.has_permissions(administrator=True)
-    async def _notice(self, ctx):
-        if str(ctx.guild.id) in noticedb.keys():
-            if noticedb[str(ctx.guild.id)] == ctx.channel.id:
-                await ctx.send(embed=discord.Embed(title=f'❓ 이미 이 채널이 공지채널로 설정되어 있습니다!', color=0xff0000))
-                return
-            embed = get_embed('📢 | 공지채널 설정', f'**현재 공지채널은 <#{noticedb[str(ctx.guild.id)]}> 로 설정되어 있습니다.**\n<#{ctx.channel.id}> 을 공지채널로 설정할까요?\n20초 안에 선택해주세요.')
-        else:    
-            embed = get_embed('📢 | 공지채널 설정', f'<#{ctx.channel.id}> 을 공지채널로 설정할까요?\n20초 안에 선택해주세요.')
-        msg = await ctx.send(embed=embed)
-        for rct in ['⭕', '❌']:
-            await msg.add_reaction(rct)
-        def notich_check(reaction, user):
-            return user == ctx.author and msg.id == reaction.message.id and str(reaction.emoji) in ['⭕', '❌']
-        try:
-            reaction, user = await self.client.wait_for('reaction_add', timeout=20, check=notich_check)
-        except asyncio.TimeoutError:
-            await ctx.send(embed=discord.Embed(title='⏰ | 시간이 초과되었습니다!', color=0xff0000))
-            return
-        else:
-            em = str(reaction.emoji)
-            if em == '⭕':
-                noticedb[str(ctx.guild.id)]=ctx.channel.id
-                with open("./data/noticechannel.json", "w", encoding='utf-8') as database_json: database_json.write(json.dumps(noticedb, ensure_ascii=False, indent=4))
-                await ctx.send(embed=get_embed(f'📢 | 공지 채널을 성공적으로 설정했습니다!',f'이제 <#{ctx.channel.id}> 채널에 공지를 보냅니다.'))
-            elif em == '❌':
-                await ctx.send(embed=discord.Embed(title=f'❌ 취소되었습니다.', color=0xff0000))
+        self.pool = self.client.pool
+        self.checks = checks.checks(self.pool)
+
+        for cmds in self.get_commands():
+            cmds.add_check(self.checks.registered)
+            cmds.add_check(self.checks.master)
 
     @commands.command(name='eval')
     async def _eval(self, ctx, *, arg):
-        if ctx.author.id != 467666650183761920: raise errors.NotMaster
-        with open("./data/userdatabase.json", "r", encoding='UTF8') as db_json: userdb = json.load(db_json)
-        try: await ctx.send(embed=get_embed('관리자 기능 - Eval',f"📤 OUTPUT```{eval(arg)}```"))
-        except Exception as a: await ctx.send(embed=get_embed('관리자 기능 - Eval',f"📤 EXCEPT```{a}```",0xFF0000))
+        async with self.pool.acquire() as conn:
+            async with conn.cursor(aiomysql.DictCursor) as cur:
+                try: await ctx.send(embed=get_embed('관리자 기능 - Eval',f"📤 OUTPUT```{eval(arg)}```"))
+                except Exception as a: await ctx.send(embed=get_embed('관리자 기능 - Eval',f"📤 EXCEPT```{traceback.format_exc()}```",0xFF0000))
+
+    @commands.command(name='hawait')
+    async def _await(self, ctx, *, arg):
+        async with self.pool.acquire() as conn:
+            async with conn.cursor(aiomysql.DictCursor) as cur:
+                try: await eval(arg)
+                except Exception as a: await ctx.send(embed=get_embed('관리자 기능 - hAwait Eval',f"📤 EXCEPT```{traceback.format_exc()}```",0xFF0000))
 
     @commands.command(name='await')
     async def _awa_it(self, ctx, *, arg):
-        if ctx.author.id != 467666650183761920: raise errors.NotMaster
-        try: await eval(arg)
-        except Exception as a: await ctx.send(embed=get_embed('관리자 기능 - Await Eval',f"📤 EXCEPT```{a}```",0xFF0000))
+        async with self.pool.acquire() as conn:
+            async with conn.cursor(aiomysql.DictCursor) as cur:
+                try: res = await eval(arg) 
+                except Exception as a: await ctx.send(embed=get_embed('관리자 기능 - Await Eval',f"📤 EXCEPT```{traceback.format_exc()}```",0xFF0000))
+                else: await ctx.send(embed=get_embed('관리자 기능 - Eval',f"📤 OUTPUT```{res}```"))
+
+    @commands.command(name='강화설정')
+    async def reinforce_set(self, ctx, uid: int, name: str, level: int):
+        async with self.pool.acquire() as conn:
+            async with conn.cursor(aiomysql.DictCursor) as cur:
+                await cur.execute('UPDATE reinforce set level = %s WHERE id = %s and name = %s',(level,uid,name))
+    
+    @commands.command(name='돈설정')
+    async def _money_set(self,ctx,uid,n:int):
+        async with self.pool.acquire() as conn:
+            async with conn.cursor(aiomysql.DictCursor) as cur:
+                await cur.execute('UPDATE userdata set money=%s WHERE id = %s', (str(n), uid))
+        await ctx.send(f"SETTED money\nuid: {uid}\nn: {n}")
+
+    @commands.command(name='은행설정')
+    async def _bank_set(self, ctx, uid, n:int):
+        async with self.pool.acquire() as conn:
+            async with conn.cursor(aiomysql.DictCursor) as cur:
+                await cur.execute('UPDATE userdata set bank=%s WHERE id = %s', (str(n), uid))
+        await ctx.send(f"SETTED bank\nuid: {uid}\nn: {n}")
+
+    @commands.command(name='강제가입')
+    async def _force_register(self, ctx: commands.Context, uid):
+        async with self.pool.acquire() as conn:
+            async with conn.cursor(aiomysql.DictCursor) as cur:
+                if await cur.execute('select * from userdata where id=%s', uid) != 0:
+                    await ctx.send("Already Registered")
+                    return
+                await cur.execute('INSERT INTO userdata VALUES(%s, "5000", 0, 0, 0)', uid)
+                await ctx.send(f"Setted\nuid: {uid}")
+
+    @commands.command(name='유저등록확인')
+    async def _check_user_existing(self, ctx: commands.Context, uid):
+        async with self.pool.acquire() as conn:
+            async with conn.cursor(aiomysql.DictCursor) as cur:
+                if await cur.execute('select * from userdata where id=%s', uid) != 0:
+                    await cur.execute('select * from userdata where id=%s', uid)
+                    fetch = await cur.fetchall()
+                    await ctx.send(f"Registered USER : {uid}\n{fetch}")
+                    return
+                await ctx.send("Not registered")
+
+    @commands.command(name='어드민추가')
+    async def _add_admin(self, ctx: commands.Context, uid):
+        async with self.pool.acquire() as conn:
+            async with conn.cursor(aiomysql.DictCursor) as cur:
+                if await cur.execute('select * from userdata where id=%s', uid) == 0:
+                    await cur.execute('INSERT INTO userdata VALUES(%s, "5000", 0, 1, 0)', uid)
+                    await ctx.send("Done. + force registered")
+                    return
+                await cur.execute('UPDATE userdata set adminuser = 1 WHERE id = %s', uid)
+                await ctx.send("Done.")
+
+    @commands.command(name="블랙추가")
+    async def _up_black(self, ctx, uid):
+        async with self.pool.acquire() as conn:
+            async with conn.cursor(aiomysql.DictCursor) as cur:
+                if await cur.execute('select * from userdata where id=%s', uid) == 0:
+                    await cur.execute('INSERT INTO userdata VALUES(%s, "5000", 0, 0, 1)', uid)
+                    await ctx.send("Done. + force registered")
+                    return
+                await cur.execute('UPDATE userdata set blacklist = 1 WHERE id = %s', uid)
+                await ctx.send("Done.")
+
+    @commands.command(name="블랙제거")
+    async def _down_black(self, ctx, uid):
+        async with self.pool.acquire() as conn:
+            async with conn.cursor(aiomysql.DictCursor) as cur:
+                if await cur.execute('select * from userdata where id=%s', uid) == 0:
+                    await ctx.send("Not Registered")
+                    return
+                await cur.execute('UPDATE userdata set blacklist = 0 WHERE id = %s', uid)
 
     @commands.command(name='공지보내')
     async def _notice_send(self, ctx, *, arg):
