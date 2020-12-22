@@ -1,4 +1,4 @@
-import discord, json, asyncio, typing
+import discord, asyncio, typing, aiomysql
 import traceback
 from discord.ext import commands, tasks
 from random import randint
