@@ -1,0 +1,11 @@
+{
+    "db":{
+        "host":"arpa.kro.kr",
+        "user":"rtbot",
+        "password":"infinite2018!!rtbot",
+        "db":"rtbot",
+        "charset":"utf8"
+    },
+    "token":"NjYxNDc3NDYwMzkwNzA3MjAx.Xgr-5A.mQ479UgeAc92mDKtHzrREgdUoUg",
+    "command_prefix":["알티야","알","ㅇ!"]
+}
