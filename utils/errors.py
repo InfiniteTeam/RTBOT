@@ -25,7 +25,7 @@ class SentByBotUser(commands.CheckFailure):
 class LockedExtensionUnloading(Exception):
     pass
 
-class blacklistuser(Exception):
+class blacklistuser(commands.CheckFailure):
     pass
 
 class playinggame(Exception):
