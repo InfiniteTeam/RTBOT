@@ -208,7 +208,7 @@ class minigame(commands.Cog):
             async with conn.cursor(aiomysql.DictCursor) as cur:
                 await cur.execute('SELECT money FROM userdata WHERE id = %s', ctx.author.id)
                 fetch = await cur.fetchone()
-                money = fetch["money"]
+                money = int(fetch["money"])
                 await cur.execute('UPDATE userdata set money=%s WHERE id = %s', (str(money-n),ctx.author.id))
                 if number == 0:
                     lev = lev * 2
@@ -320,7 +320,7 @@ class minigame(commands.Cog):
 
                         await cur.execute('SELECT money FROM userdata WHERE id = %s', ctx.author.id)
                         fetch = await cur.fetchone()
-                        money = fetch["money"]
+                        money = int(fetch["money"])
                         
                         await cur.execute('UPDATE userdata set money=%s WHERE id = %s', (str(money+n*bae),ctx.author.id))
                         self.gaming_list.remove(ctx.author.id)
