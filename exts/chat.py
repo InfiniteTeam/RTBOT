@@ -1,5 +1,6 @@
-import discord,os,json,random,datetime,requests,bs4,asyncio,typing
+import discord,random,datetime,asyncio,typing, aiomysql,time
 from discord.ext import commands 
+from utils import checks
 
 start_time = datetime.datetime.utcnow()
 
@@ -7,11 +8,22 @@ def get_embed(title, description='', color=0xCCFFFF):
     embed=discord.Embed(title=title,description=description,color=color)
     return embed
 
+def pinglev(ping: int):
+    if ping <= 100: pinglevel = '🔵 매우좋음'
+    elif ping <= 300: pinglevel = '🟢 양호함'
+    elif ping <= 450: pinglevel = '🟡 보통'
+    elif ping <= 600: pinglevel = '🔴 나쁨'
+    else: pinglevel = '⚫ 매우나쁨'
+    return pinglevel
+
 class chat(commands.Cog):
     def __init__(self, client):
         self.client = client
+
+        self.pool = self.client.pool
+        self.checks = checks.checks(self.client.pool)
         
-    @commands.command(name="유저")
+    @commands.command(name="유저",aliases=["유"])
     async def now_playing_user(self, ctx):
         async with self.pool.acquire() as conn:
             async with conn.cursor(aiomysql.DictCursor) as cur:
@@ -33,13 +45,11 @@ class chat(commands.Cog):
 
     @commands.command(name='핑')
     async def chat_ping(self, ctx):
-        ping = round(1000 * self.client.latency,2)
-        if ping <= 100: pinglevel = '🔵 매우좋음'
-        elif 100 < ping <= 250: pinglevel = '🟢 양호함'
-        elif 250 < ping <= 400: pinglevel = '🟡 보통'
-        elif 400 < ping <= 550: pinglevel = '🔴 나쁨'
-        else: pinglevel = '⚫ 매우나쁨'
-        await ctx.send(embed=get_embed('🏓 퐁!',f'**디스코드 지연시간: **{ping}ms - {pinglevel}'))
+        ping = [round(1000 * self.client.latency,2)]
+        time_then = time.monotonic()
+        pinger = await ctx.send(embed=get_embed('🏓 퐁!',f'**디스코드 지연시간: **{ping[0]}ms - {pinglev(ping[0])}\n\n**봇 메세지 지연시간**: Pinging..'))
+        ping.append(round(1000*(time.monotonic()-time_then),2))
+        await pinger.edit(embed=get_embed('🏓 퐁!',f'**디스코드 지연시간: **{ping[0]}ms - {pinglev(ping[0])}\n\n**봇 메세지 지연시간**: {ping[1]}ms - {pinglev(ping[1])}'))
 
     @commands.command(name='샤드')
     async def _shard_id(self, ctx: commands.Context):
