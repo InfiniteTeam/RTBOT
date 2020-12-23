@@ -1,8 +1,8 @@
 import discord, asyncio, typing, aiomysql
 import traceback
-from discord.ext import commands, tasks
+from discord.ext import commands
 from random import randint
-from utils import errors
+from utils import errors, checks
 
 def get_embed(title, description='', color=0xCCFFFF): 
     return discord.Embed(title=title,description=description,color=color)
@@ -10,8 +10,18 @@ def get_embed(title, description='', color=0xCCFFFF):
 class money(commands.Cog):
     def __init__(self, client):
         self.client = client
-        self.gaming_list = []
+        
         self.tictactoe = {}
+
+        self.pool = self.client.pool
+        self.checks = checks.checks(self.pool)
+
+        self._dobak.add_check(self.checks.money0up)
+        self.dobak_all.add_check(self.checks.money0up)
+
+        for cmds in self.get_commands():
+            cmds.add_check(self.checks.registered)
+            cmds.add_check(self.checks.blacklist)
 
     @commands.group(name='도박', invoke_without_command=True)
     @commands.cooldown(1, 1, commands.BucketType.user)
@@ -174,7 +184,6 @@ class money(commands.Cog):
 
     @commands.group(name='돈순위', aliases=['순위','랭크','순'], invoke_without_command=True)
     async def _money_rank(self, ctx):
-        async def money_rank(self, ctx):
         async with self.pool.acquire() as conn:
             async with conn.cursor(aiomysql.DictCursor) as cur:
                 await cur.execute('SELECT * FROM userdata')
