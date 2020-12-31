@@ -3,8 +3,6 @@ from discord.ext import commands, tasks
 from utils import errors, permutil
 from itertools import cycle
 
-
-
 def get_embed(title, description='', color=0xccffff): 
     return discord.Embed(title=title,description=description,color=color)
 
@@ -12,7 +10,7 @@ class events(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.bg_change_playing.start()
-        self.gamecycle = cycle([f"알티봇 V3.5.2", "'알티야 도움'로 봇명령어 알아보기", f"{len(self.client.guilds)} Servers│{len(self.client.users)} Users"])
+        self.gamecycle = cycle([f"알티봇 V4.0.0", "'알티야 도움'로 봇명령어 알아보기", f"{len(self.client.guilds)} Servers│{len(self.client.users)} Users"])
 
     @tasks.loop(seconds=15)
     async def bg_change_playing(self):
@@ -44,6 +42,14 @@ class events(commands.Cog):
         allerrs = (type(error), type(error.__cause__))
 
         if commands.errors.MissingRequiredArgument in allerrs:
+            return
+
+        elif isinstance(error, errors.playinggame):
+            await ctx.send(embed=get_embed("<a:no:698461934613168199> | 이미 다른 게임이 진행중입니다.", "",0xff0000))
+            return
+
+        elif isinstance(error, errors.blacklistuser):
+            await ctx.send(embed=get_embed("<a:no:698461934613168199> | 블랙리스트에 오른 상태입니다!","블랙리스트 명단에 추가되어 봇을 사용하실수 없습니다.",0xFF0000))
             return
 
         elif isinstance(error, errors.NotMaster):
@@ -162,9 +168,6 @@ class events(commands.Cog):
                 return
             
             elif error.__cause__.code == 10008:
-                return
-                                      
-            elif error.__cause__.code == 0:
                 return
 
             else:
