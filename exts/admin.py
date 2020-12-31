@@ -1,4 +1,4 @@
-import discord,os,json,random,datetime,requests,bs4,asyncio,typing
+import discord,os,json,random,datetime,requests,bs4,asyncio,typing,io
 from discord.ext import commands 
 from utils import errors
 
@@ -58,7 +58,9 @@ class admincmds(commands.Cog):
     @commands.command(name='공지보내')
     async def _notice_send(self, ctx, *, arg):
         if ctx.author.id != 467666650183761920: raise errors.NotMaster
-        lis =[]
+        lis =["SUCCEED LIST"]
+        faillis = ["FAIL LIST"]
+        sendctrlpannel = await ctx.send(embed=get_embed("공지 전송중",""))
         for s in self.client.guilds:
             sendedserver = s.name
             schannel = ''
@@ -89,11 +91,15 @@ class admincmds(commands.Cog):
                 if schannel == '':
                     schannel = freechannel
             try: 
-                await schannel.send(embed=get_embed(":warning: | 알티봇 공지",arg+"\n\n[인피니트 서포트 서버](https://discord.gg/7aFczQk)\n[알티봇 서포트 서버](https://discord.gg/hTZxtbC)\n[알티봇 초대하기](https://discordapp.com/api/oauth2/authorize?client_id=661477460390707201&permissions=8&scope=bot)"))
-                lis.append('<a:yes:698461934198063104> '+sendedserver)
+                await schannel.send(embed=get_embed("<a:waiting:712170404869046334> ｜ 알티봇 3.6 Algedi (알게디) 대규모 업데이트 공지",arg+"\n\n모든 문의,건의는 [알티봇 서포트](https://discord.gg/hTZxtbC) 에서 해주세요.\n[알티봇 초대하기](https://discordapp.com/api/oauth2/authorize?client_id=661477460390707201&permissions=8&scope=bot) "))
+                lis.append('성공 '+sendedserver)
             except: 
-                lis.append('<a:no:698461934613168199> '+sendedserver)
-        await ctx.send(embed=get_embed("공지 전송 완료","\n".join(lis)))
+                faillis.append('실패 '+sendedserver)
+            await sendctrlpannel.edit(embed=get_embed("공지 전송중",f"성공 : {len(lis)-1}\n실패 : {len(faillis)-1}"))
+        await ctx.send("성공")
+        logfile = discord.File(fp=io.StringIO("\n".join(lis)+"\n\n"+"\n".join(faillis)), filename='notilog.log')
+        await ctx.send(file=logfile)
+        
 
 def setup(client):
     client.add_cog(admincmds(client))
