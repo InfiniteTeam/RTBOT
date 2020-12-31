@@ -221,7 +221,7 @@ class money(commands.Cog):
             else: medal = ":medal:"
             try: username=ctx.guild.get_member(int(lis[a][0])).name
             except: pass
-            embed.add_field(name=f"{medal} {a+1}위 {username}님",value=f"{lis[a][1]}원",inline=False)
+            else: embed.add_field(name=f"{medal} {a+1}위 {username}님",value=f"{lis[a][1]}원",inline=False)
         await ctx.send(embed=embed)
 
     @commands.group(name='저금', invoke_without_command=True)
