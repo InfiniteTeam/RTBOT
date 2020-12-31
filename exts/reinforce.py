@@ -98,11 +98,11 @@ class reinforce(commands.Cog):
     async def _rf_erase(self, ctx, *, arg):
         async with self.pool.acquire() as conn:
             async with conn.cursor(aiomysql.DictCursor) as cur:
-                if await cur.execute('SELECT * FROM reinforce WHERE id = %s and name = %s',(ctx.author.id,weapon)) == 0:
+                if await cur.execute('SELECT * FROM reinforce WHERE id = %s and name = %s',(ctx.author.id,arg)) == 0:
                     await ctx.send(embed=get_embed("<a:no:698461934613168199> | 찾을수 없는 물품입니다.","",0xff0000))
                     return
 
-                await cur.execute('SELECT level FROM reinforce WHERE id = %s and name = %s',(ctx.author.id,weapon))
+                await cur.execute('SELECT level FROM reinforce WHERE id = %s and name = %s',(ctx.author.id,arg))
                 fetch = await cur.fetchone()
                 level=fetch["level"]
 
@@ -123,7 +123,7 @@ class reinforce(commands.Cog):
                 else:
                     e = str(reaction.emoji)
                     if e == '<a:yes:698461934198063104>':
-                        await cur.execute('DELETE from reinforce WHERE id = %s and name = %s',(ctx.author.id,weapon))
+                        await cur.execute('DELETE from reinforce WHERE id = %s and name = %s',(ctx.author.id,arg))
                         await ctx.send(embed=get_embed("<a:yes:698461934198063104> | 삭제 완료!"))
                         return
                     elif e == '<a:no:698461934613168199>':
