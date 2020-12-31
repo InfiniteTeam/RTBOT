@@ -18,7 +18,7 @@ async def connect_db():
     
 pool = loop.run_until_complete(connect_db())
 
-client = commands.AutoShardedBot(command_prefix=config["command_prefix"],intents=discord.Intents.all())
+client = commands.AutoShardedBot(command_prefix=config["command_prefix"],intents=discord.Intents.default())
 client.pool = pool
 
 for ext in filter(lambda x: x.endswith('.py') and not x.startswith('_'), os.listdir('./exts')):
