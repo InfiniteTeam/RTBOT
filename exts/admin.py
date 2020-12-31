@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import discord,os,json,random,datetime,requests,bs4,asyncio,typing,io
-=======
 import discord,json,datetime,aiomysql,traceback
->>>>>>> 2dc96d5e6232b47d9b62543ce0c8ece3e766a89a
 from discord.ext import commands 
 from utils import errors,checks
 
@@ -168,11 +164,7 @@ class admincmds(commands.Cog):
                 if schannel == '':
                     schannel = freechannel
             try: 
-<<<<<<< HEAD
-                await schannel.send(embed=get_embed("<a:waiting:712170404869046334> ｜ 알티봇 3.6 Algedi (알게디) 대규모 업데이트 공지",arg+"\n\n모든 문의,건의는 [알티봇 서포트](https://discord.gg/hTZxtbC) 에서 해주세요.\n[알티봇 초대하기](https://discordapp.com/api/oauth2/authorize?client_id=661477460390707201&permissions=8&scope=bot) "))
-=======
                 await schannel.send(embed=get_embed("<a:waiting:712170404869046334> ｜ 알티봇 공지",arg+"\n\n모든 문의,건의는 [알티봇 서포트](https://discord.gg/hTZxtbC) 에서 해주세요.\n[알티봇 초대하기](https://discordapp.com/api/oauth2/authorize?client_id=661477460390707201&permissions=8&scope=bot) "))
->>>>>>> 2dc96d5e6232b47d9b62543ce0c8ece3e766a89a
                 lis.append('성공 '+sendedserver)
             except: 
                 faillis.append('실패 '+sendedserver)
@@ -180,10 +172,6 @@ class admincmds(commands.Cog):
         await ctx.send("성공")
         logfile = discord.File(fp=io.StringIO("\n".join(lis)+"\n\n"+"\n".join(faillis)), filename='notilog.log')
         await ctx.send(file=logfile)
-<<<<<<< HEAD
-        
-=======
->>>>>>> 2dc96d5e6232b47d9b62543ce0c8ece3e766a89a
 
 def setup(client):
     client.add_cog(admincmds(client))
