@@ -38,7 +38,11 @@ class chat(commands.Cog):
 
     @commands.command(name='정보')
     async def chat_info(self, ctx):
-        embed = discord.Embed(title="🏷️ | **RT BOT**",description=f"RT BOT Made By **TH_PHEC#0001**\n> Made With Discord.py\n> Ver. Beta 3.5.0\n> Helpers. **미래#2374**\n**{len(self.client.guilds)}** SERVERS | **{len(self.client.users)}** USERS", color=0xCCffff)
+        try: thphec = self.client.get_user(467666650183761920)
+        except: thphec = "TH_PHEC (트펙)"
+        try: dark = self.client.get_user(472048060483239939) 
+        except: dark = "미래"
+        embed = discord.Embed(title="🏷️ | **RT BOT**",description=f"RT BOT Made By **{thphec}**\n> Made With Discord.py\n> Ver. Beta 3.5.0\n> Helpers. **{dark}**\n**{len(self.client.guilds)}** SERVERS | **{len(self.client.users)}** USERS", color=0xCCffff)
         embed.set_footer(text="TEAM Infinite®️",icon_url='https://cdn.discordapp.com/icons/689375730483855389/89eb7bfc0dabc59dcda58e733818a4c5.webp?size=1024')
         embed.set_thumbnail(url=self.client.user.avatar_url)
         await ctx.send(embed=embed)
