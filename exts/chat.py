@@ -55,10 +55,6 @@ class chat(commands.Cog):
         ping.append(round(1000*(time.monotonic()-time_then),2))
         await pinger.edit(embed=get_embed('🏓 퐁!',f'**디스코드 지연시간: **{ping[0]}ms - {pinglev(ping[0])}\n\n**봇 메세지 지연시간**: {ping[1]}ms - {pinglev(ping[1])}'))
 
-    @commands.command(name='샤드')
-    async def _shard_id(self, ctx: commands.Context):
-        await ctx.send(embed=discord.Embed(description=f'**이 서버의 샤드 아이디는 `{ctx.guild.shard_id}`입니다.**', color=0xccffff))
-
     @commands.command(name='서버')
     async def chat_server(self, ctx):
         if ctx.author.id != 467666650183761920: return
