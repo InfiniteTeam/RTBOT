@@ -28,10 +28,10 @@ class LockedExtensionUnloading(Exception):
 class blacklistuser(commands.CheckFailure):
     pass
 
-class playinggame(Exception):
+class playinggame(commands.CheckFailure):
     pass
 
-class NotFound(Exception):
+class NotFound(commands.CheckFailure):
     pass
 
 class MissingRequiredArgument(commands.CheckFailure):
