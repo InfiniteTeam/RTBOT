@@ -49,7 +49,7 @@ class admincmds(commands.Cog):
                 await self.sendlog(ctx)
                 
     @commands.command(name='exec')
-    async def _eval(self, ctx, *, arg):
+    async def _exec(self, ctx, *, arg):
         async with self.pool.acquire() as conn:
             async with conn.cursor(aiomysql.DictCursor) as cur:
                 try: await ctx.send(embed=get_embed('관리자 기능 - Exec',f"📤 OUTPUT```{exec(arg)}```"))
