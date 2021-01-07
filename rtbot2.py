@@ -12,7 +12,8 @@ async def connect_db():
         password=config["db"]["password"],
         db=config["db"]["db"],
         charset=config["db"]["charset"],
-        autocommit=True
+        autocommit=True,
+        maxsize=10000
     )
     return pool
     
