@@ -34,6 +34,15 @@ class minigame(commands.Cog):
     @commands.group(name='가위바위보', invoke_without_command=True)
     @commands.cooldown(1, 2, commands.BucketType.user)
     async def rsp(self, ctx, n: typing.Union[str, None] = None):
+        await ctx.send(
+            embed=get_embed(
+                "이 기능은 잠시 비활성화 되었습니다.",
+                "현재 알티봇은 재작성 과정에 있어 버그 수정이 이루어지지 않고 있으며, 이 명령어의 오류로 인해 전체 이용에 불편을 주는 버그가 발생하므로 해당 기능을 비활성화합니다.",
+                0xFF0000
+            )
+        )
+        return
+
         money = await self.start_game(ctx.author.id)
         
         emjs=['✋','✌️','✊']
