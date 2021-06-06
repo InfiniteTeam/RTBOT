@@ -179,7 +179,7 @@ class events(commands.Cog):
             await ctx.send(embed=get_embed('<a:no:698461934613168199> | **ERROR**!',f'무언가 오류가 발생했습니다!\n```python\n{traceback.format_exception(type(error), error, error.__traceback__)}```tlqkf',0xFF0000))
 
         else:
-            await ctx.send(embed=get_embed('<a:no:698461934613168199> | 알 수 없는 에러발생!','[알티봇 서포트 서버](https://discord.gg/hTZxtbC)에서 도움을 드립니다.',0xff0000))
+            await ctx.send(embed=get_embed('<a:no:698461934613168199> | 알 수 없는 에러발생!','[Infinite TEAM 공식 서포트 센터](https://discord.gg/eF6Qbt5)에서 도움을 드립니다.',0xff0000))
             await self.client.get_channel(728788620000886854).send(embed=get_embed('<a:no:698461934613168199> | **ERROR**!',f'Id : {ctx.author.id}\nContent : {ctx.message.content}```python\n{traceback.format_exception(type(error), error, error.__traceback__)}```ㅄ',0xFF0000))
 
 def setup(client):
