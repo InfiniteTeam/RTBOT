@@ -1,6 +1,6 @@
 # RTBOT
 
-## Developed by. TH_PHEC ((Infinite TEAM)[https://inft.kr])
+## Developed by. TH_PHEC ([Infinite TEAM](https://inft.kr))
 
 ### 2020 ~ 2021까지 개발한 디스코드 텍스트 기반 미니게임 봇  
 
